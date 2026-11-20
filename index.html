@@ -7,7 +7,6 @@
   <meta name="theme-color" content="#173f32">
 
   <meta name="description" content="Discover authentic Moroccan cooking classes in Fes, Morocco with Dar Mohamed. Learn traditional Moroccan recipes, explore local markets and enjoy a unique culinary experience.">
-
   <meta name="robots" content="index, follow">
   <meta name="author" content="Dar Mohamed">
 
@@ -28,7 +27,6 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
@@ -67,6 +65,114 @@
       font-weight: 700;
       flex-shrink: 0;
     }
+
+    /* Booking form */
+    .booking-section {
+      padding: 75px 20px;
+      background: #f5f5ef;
+    }
+
+    .booking-inner {
+      max-width: 760px;
+      margin: auto;
+      background: #fff;
+      padding: 35px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px #0000000c;
+    }
+
+    .booking-heading {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .booking-heading h2 {
+      color: #244d39;
+      margin-bottom: 12px;
+    }
+
+    .booking-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .booking-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .booking-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .booking-field label {
+      color: #244d39;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .booking-field input,
+    .booking-field select,
+    .booking-field textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #deded5;
+      border-radius: 8px;
+      background: #fff;
+      color: #20352c;
+      font: inherit;
+      font-size: 15px;
+    }
+
+    .booking-field textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .booking-field input:focus,
+    .booking-field select:focus,
+    .booking-field textarea:focus {
+      outline: 2px solid #244d39;
+      border-color: #244d39;
+    }
+
+    .booking-submit {
+      grid-column: 1 / -1;
+      width: 100%;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .booking-submit:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    #bookingMessage {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .booking-inner {
+        padding: 22px 17px;
+      }
+
+      .booking-form {
+        grid-template-columns: 1fr;
+      }
+
+      .booking-field.full,
+      .booking-submit,
+      #bookingMessage {
+        grid-column: 1;
+      }
+    }
   </style>
 </head>
 
@@ -75,11 +181,9 @@
 <header class="site-header">
   <a class="brand" href="#home" aria-label="Cooking Class with Dar Mohamed home">
     <span class="brand-mark">م</span>
-
     <span class="brand-name">
       Cooking Class
       <small>with Dar Mohamed</small>
-
       <small class="meta-verification">
         <span class="meta-check">✓</span>
         Verified par Meta Console
@@ -103,11 +207,7 @@
       <option value="ar">AR</option>
     </select>
 
-    <a class="button button-small"
-       href="https://wa.me/212639384644"
-       target="_blank"
-       rel="noopener"
-       data-i18n="book">Book now</a>
+    <a class="button button-small" href="#booking" data-i18n="book">Book now</a>
   </div>
 </header>
 
@@ -122,7 +222,6 @@
 
     <div class="hero-content">
       <p class="eyebrow" data-i18n="heroEyebrow">FES · MOROCCO</p>
-
       <h1 data-i18n="heroTitle">Discover the art of Moroccan cooking</h1>
 
       <p class="hero-copy" data-i18n="heroText">
@@ -130,15 +229,8 @@
       </p>
 
       <div class="hero-buttons">
-        <a class="button"
-           href="https://wa.me/212639384644"
-           target="_blank"
-           rel="noopener"
-           data-i18n="bookExperience">Book your experience</a>
-
-        <a class="button button-ghost"
-           href="#experience"
-           data-i18n="discover">Discover the experience</a>
+        <a class="button" href="#booking" data-i18n="bookExperience">Book your experience</a>
+        <a class="button button-ghost" href="#experience" data-i18n="discover">Discover the experience</a>
       </div>
     </div>
 
@@ -156,7 +248,6 @@
 
     <div class="intro-text">
       <p class="eyebrow" data-i18n="welcome">WELCOME TO MY KITCHEN</p>
-
       <h2 data-i18n="introTitle">A taste of Morocco, made together</h2>
 
       <p data-i18n="introText">
@@ -171,22 +262,17 @@
 
   <section class="experience-section" id="experience">
     <div class="section-wrap">
-
       <div class="section-heading">
         <p class="eyebrow" data-i18n="yourExperience">YOUR EXPERIENCE</p>
-
         <h2 data-i18n="experienceTitle">More than a cooking class</h2>
-
         <p data-i18n="experienceIntro">
           A personal Moroccan food experience, shaped around your interests and your time.
         </p>
       </div>
 
       <div class="feature-grid">
-
         <article class="feature-card">
           <img src="IMG-20261117-WA0025.jpg" alt="Preparing fresh Moroccan ingredients">
-
           <div>
             <span class="feature-number">01</span>
             <h3 data-i18n="feature1Title">Choose your dishes</h3>
@@ -198,7 +284,6 @@
 
         <article class="feature-card">
           <img src="IMG-20261117-WA0030.jpg" alt="Traditional market in the medina of Fes">
-
           <div>
             <span class="feature-number">02</span>
             <h3 data-i18n="feature2Title">Explore the local market</h3>
@@ -211,7 +296,6 @@
 
         <article class="feature-card">
           <img src="IMG-20261117-WA0021.jpg" alt="Guests enjoying Moroccan food">
-
           <div>
             <span class="feature-number">03</span>
             <h3 data-i18n="feature3Title">Cook side by side</h3>
@@ -220,14 +304,11 @@
             </p>
           </div>
         </article>
-
       </div>
     </div>
   </section>
 
-  <!-- PRODUCTS SECTION -->
   <section class="products-section section-wrap" id="products">
-
     <div class="section-heading">
       <p class="eyebrow" data-i18n="productsEyebrow">OUR SELECTION</p>
       <h2 data-i18n="productsTitle">Our Products</h2>
@@ -237,12 +318,9 @@
     <div id="products-list" class="products-grid">
       <p data-i18n="productsLoading">Loading products...</p>
     </div>
-
   </section>
 
-  <!-- VIDEOS SECTION -->
   <section class="videos-section section-wrap" id="videos">
-
     <div class="section-heading">
       <p class="eyebrow" data-i18n="videosEyebrow">WATCH & DISCOVER</p>
       <h2 data-i18n="videosTitle">Our Videos</h2>
@@ -252,18 +330,14 @@
     <div id="videos-list" class="videos-grid">
       <p data-i18n="videosLoading">Loading videos...</p>
     </div>
-
   </section>
 
   <section class="quote-band">
-    <p data-i18n="quote">
-      “The best way to discover a culture is through its food.”
-    </p>
+    <p data-i18n="quote">“The best way to discover a culture is through its food.”</p>
     <span>— Dar Mohamed</span>
   </section>
 
   <section class="gallery section-wrap" id="gallery">
-
     <div class="section-heading">
       <p class="eyebrow" data-i18n="moments">MOMENTS TO SHARE</p>
       <h2 data-i18n="galleryTitle">Inside the Moroccan kitchen</h2>
@@ -275,38 +349,86 @@
       <img src="IMG-20261117-WA0028.jpg" alt="Cooking with a guest">
       <img src="IMG-20261117-WA0021.jpg" alt="Moroccan food experience">
     </div>
-
   </section>
 
   <section class="personalize">
     <div class="personalize-inner">
-
       <p class="eyebrow" data-i18n="madeForYou">MADE FOR YOU</p>
-
-      <h2 data-i18n="personalTitle">
-        Your time. Your menu. Your experience.
-      </h2>
+      <h2 data-i18n="personalTitle">Your time. Your menu. Your experience.</h2>
 
       <p data-i18n="personalText">
         The class duration is flexible and arranged according to your request. The price depends on the duration and is personally set by Mohamed. Contact him to discuss your ideal experience and receive a quote.
       </p>
 
-      <a class="button"
-         href="https://wa.me/212639384644"
-         target="_blank"
-         rel="noopener"
-         data-i18n="askPrice">Ask Mohamed for a quote</a>
+      <a class="button" href="#booking" data-i18n="askPrice">Ask Mohamed for a quote</a>
+    </div>
+  </section>
 
+  <!-- BOOKING FORM -->
+  <section class="booking-section" id="booking">
+    <div class="booking-inner">
+      <div class="booking-heading">
+        <p class="eyebrow" data-i18n="bookingEyebrow">BOOK YOUR EXPERIENCE</p>
+        <h2 data-i18n="bookingTitle">Make a Reservation</h2>
+        <p data-i18n="bookingIntro">Fill in the form and Mohamed will contact you to confirm your booking.</p>
+      </div>
+
+      <form id="bookingForm" class="booking-form">
+
+        <div class="booking-field">
+          <label for="bookingName" data-i18n="bookingName">Full name</label>
+          <input id="bookingName" name="customer_name" type="text" autocomplete="name" required maxlength="100">
+        </div>
+
+        <div class="booking-field">
+          <label for="bookingEmail" data-i18n="bookingEmail">Email address</label>
+          <input id="bookingEmail" name="email" type="email" autocomplete="email" required maxlength="150">
+        </div>
+
+        <div class="booking-field">
+          <label for="bookingPhone" data-i18n="bookingPhone">Phone / WhatsApp</label>
+          <input id="bookingPhone" name="phone" type="tel" autocomplete="tel" required maxlength="30">
+        </div>
+
+        <div class="booking-field">
+          <label for="bookingDate" data-i18n="bookingDate">Preferred date</label>
+          <input id="bookingDate" name="booking_date" type="date" required>
+        </div>
+
+        <div class="booking-field">
+          <label for="bookingGuests" data-i18n="bookingGuests">Number of guests</label>
+          <select id="bookingGuests" name="guests" required>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+
+        <div class="booking-field full">
+          <label for="bookingMessageText" data-i18n="bookingNote">Message (optional)</label>
+          <textarea id="bookingMessageText" name="message" maxlength="1000" data-i18n-placeholder="bookingNotePlaceholder" placeholder="Tell us about the dishes you would like to learn or any special requests."></textarea>
+        </div>
+
+        <button class="button booking-submit" id="bookingSubmit" type="submit" data-i18n="bookingSubmit">
+          Send booking request
+        </button>
+
+        <p id="bookingMessage" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 
   <section class="contact section-wrap" id="contact">
-
     <div>
       <p class="eyebrow" data-i18n="letsPlan">LET'S PLAN YOUR EXPERIENCE</p>
-
       <h2 data-i18n="contactTitle">Ready to cook in Fes?</h2>
-
       <p data-i18n="contactText">
         Tell Mohamed what you would like to cook, how much time you have, and whether you would like to visit the market.
       </p>
@@ -319,14 +441,11 @@
       <span>☏</span>
       <span data-i18n="whatsapp">Contact on WhatsApp</span>
     </a>
-
   </section>
 
 </main>
 
-<!-- FOOTER -->
 <footer>
-
   <a class="brand footer-brand" href="#home">
     <span class="brand-mark">م</span>
     <span>Cooking Class <small>with Dar Mohamed</small></span>
@@ -334,9 +453,7 @@
 
   <p>
     Fes, Morocco ·
-    <a href="https://wa.me/212639384644"
-       target="_blank"
-       rel="noopener">+212 639-384644</a>
+    <a href="https://wa.me/212639384644" target="_blank" rel="noopener">+212 639-384644</a>
   </p>
 
   <div class="copyright">
@@ -345,39 +462,7 @@
       Copying or reusing any content from this website without the owner's prior permission is prohibited.
     </p>
   </div>
-
 </footer>
-
-<!-- COPYRIGHT LANGUAGE -->
-<script>
-(function () {
-  const copyright = document.getElementById("copyright-text");
-  const language = document.getElementById("language");
-
-  if (!copyright) return;
-
-  function updateCopyright() {
-    const year = new Date().getFullYear();
-    const selectedLanguage = language ? language.value : "en";
-
-    const messages = {
-      en: `© ${year} Dar Mohamed. All rights reserved. Copying or reusing any content from this website without the owner's prior permission is prohibited.`,
-
-      fr: `© ${year} Dar Mohamed. Tous droits réservés. Toute copie ou réutilisation du contenu de ce site est interdite sans l'autorisation préalable du propriétaire.`,
-
-      ar: `© ${year} دار محمد. جميع الحقوق محفوظة. يُمنع نسخ أو إعادة استعمال محتوى هذا الموقع دون إذن مسبق من المالك.`
-    };
-
-    copyright.textContent = messages[selectedLanguage] || messages.en;
-  }
-
-  updateCopyright();
-
-  if (language) {
-    language.addEventListener("change", updateCopyright);
-  }
-})();
-</script>
 
 <script type="module" src="script.js"></script>
 
