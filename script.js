@@ -42,30 +42,6 @@ const videosContainer = document.getElementById("videos-list");
 
 let currentLanguage = localStorage.getItem("darMohamedLanguage") || "en";
 
-function setLanguage(lang) {
-  const t = translations[lang] || translations.en;
-
-  currentLanguage = lang;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  document.body.dir = lang === "ar" ? "rtl" : "ltr";
-
-  document.querySelectorAll("[data-i18n]").forEach(el => {
-    const key = el.getAttribute("data-i18n");
-    if (t[key]) el.textContent = t[key];
-  });
-
-  document.title =
-    lang === "ar" ? "كوكينغ كلاس مع دار محمد | فاس، المغرب" :
-    lang === "fr" ? "Cours de cuisine avec Dar Mohamed | Fès, Maroc" :
-    "Cooking Class with Dar Mohamed | Fes, Morocco";
-
-  localStorage.setItem("darMohamedLanguage", lang);
-
-  loadProducts();
-  loadVideos();
-}
-
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -76,65 +52,98 @@ function escapeHTML(value) {
   })[char]);
 }
 
+function setLanguage(lang) {
+  const t = translations[lang] || translations.en;
+
+  currentLanguage = translations[lang] ? lang : "en";
+
+  document.documentElement.lang = currentLanguage;
+  document.documentElement.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+  document.body.dir = currentLanguage === "ar" ? "rtl" : "ltr";
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (t[key]) el.textContent = t[key];
+  });
+
+  document.title =
+    currentLanguage === "ar" ? "كوكينغ كلاس مع دار محمد | فاس، المغرب" :
+    currentLanguage === "fr" ? "Cours de cuisine avec Dar Mohamed | Fès, Maroc" :
+    "Cooking Class with Dar Mohamed | Fes, Morocco";
+
+  localStorage.setItem("darMohamedLanguage", currentLanguage);
+
+  loadProducts();
+  loadVideos();
+}
+
 async function loadProducts() {
   if (!productsContainer) return;
 
   const t = translations[currentLanguage] || translations.en;
   productsContainer.innerHTML = `<p>${t.productsLoading}</p>`;
 
-  const { data, error } = await supabase
-    .from("products")
-    .select("id,name,description,price,image_url,category,stock,is_active,created_at")
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id,name,description,price,image_url,category,stock,is_active,created_at")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Products error:", error);
-    productsContainer.innerHTML = `<p>${t.productsError}</p>`;
-    return;
-  }
+    if (error) {
+      console.error("Products error:", error);
+      productsContainer.innerHTML =
+        `<p>Products error: ${escapeHTML(error.message)}</p>`;
+      return;
+    }
 
-  if (!data || data.length === 0) {
-    productsContainer.innerHTML = `<p>${t.productsEmpty}</p>`;
-    return;
-  }
+    if (!data || data.length === 0) {
+      productsContainer.innerHTML = `<p>${t.productsEmpty}</p>`;
+      return;
+    }
 
-  productsContainer.innerHTML = data.map(product => {
-    const name = escapeHTML(product.name);
-    const description = escapeHTML(product.description);
-    const category = escapeHTML(product.category);
-    const image = product.image_url
-      ? `<img src="${escapeHTML(product.image_url)}" alt="${name}" loading="lazy">`
-      : "";
+    productsContainer.innerHTML = data.map(product => {
+      const name = escapeHTML(product.name);
+      const description = escapeHTML(product.description);
+      const category = escapeHTML(product.category);
+      const image = product.image_url
+        ? `<img src="${escapeHTML(product.image_url)}" alt="${name}" loading="lazy">`
+        : "";
 
-    const price = Number(product.price).toLocaleString(
-      currentLanguage === "ar" ? "ar-MA" :
-      currentLanguage === "fr" ? "fr-FR" : "en"
-    );
+      const price = Number(product.price).toLocaleString(
+        currentLanguage === "ar" ? "ar-MA" :
+        currentLanguage === "fr" ? "fr-FR" : "en"
+      );
 
-    const message = encodeURIComponent(
-      currentLanguage === "ar"
-        ? `السلام عليكم، بغيت معلومات على: ${product.name}`
-        : currentLanguage === "fr"
-        ? `Bonjour, je souhaite des informations sur : ${product.name}`
-        : `Hello, I would like information about: ${product.name}`
-    );
+      const message = encodeURIComponent(
+        currentLanguage === "ar"
+          ? `السلام عليكم، بغيت معلومات على: ${product.name}`
+          : currentLanguage === "fr"
+          ? `Bonjour, je souhaite des informations sur : ${product.name}`
+          : `Hello, I would like information about: ${product.name}`
+      );
 
-    return `
-      <article class="product-card">
-        <div class="product-image">${image}</div>
-        <div class="product-info">
-          ${category ? `<span class="product-category">${category}</span>` : ""}
-          <h3>${name}</h3>
-          ${description ? `<p>${description}</p>` : ""}
-          <div class="product-bottom">
-            <strong>${price} MAD</strong>
-            <a class="button button-small" href="https://wa.me/212639384644?text=${message}" target="_blank" rel="noopener">${t.productContact}</a>
+      return `
+        <article class="product-card">
+          <div class="product-image">${image}</div>
+          <div class="product-info">
+            ${category ? `<span class="product-category">${category}</span>` : ""}
+            <h3>${name}</h3>
+            ${description ? `<p>${description}</p>` : ""}
+            <div class="product-bottom">
+              <strong>${price} MAD</strong>
+              <a class="button button-small" href="https://wa.me/212639384644?text=${message}" target="_blank" rel="noopener">${t.productContact}</a>
+            </div>
           </div>
-        </div>
-      </article>
-    `;
-  }).join("");
+        </article>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Products exception:", error);
+    productsContainer.innerHTML =
+      `<p>Products error: ${escapeHTML(error.message || error)}</p>`;
+  }
 }
 
 function getVideoEmbed(url) {
@@ -158,9 +167,12 @@ function getVideoEmbed(url) {
 
     if (host === "vimeo.com") {
       const id = parsed.pathname.split("/").filter(Boolean).pop();
-      if (id && /^\d+$/.test(id)) return `https://player.vimeo.com/video/${id}`;
+      if (id && /^\d+$/.test(id)) {
+        return `https://player.vimeo.com/video/${id}`;
+      }
     }
   } catch (error) {
+    console.error("Video URL error:", error);
     return null;
   }
 
@@ -173,72 +185,86 @@ async function loadVideos() {
   const t = translations[currentLanguage] || translations.en;
   videosContainer.innerHTML = `<p>${t.videosLoading}</p>`;
 
-  const { data, error } = await supabase
-    .from("videos")
-    .select("id,title,description,video_url,thumbnail_url,language,is_active,created_at")
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("id,title,description,video_url,thumbnail_url,language,is_active,created_at")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Videos error:", error);
-    videosContainer.innerHTML = `<p>${t.videosError}</p>`;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    videosContainer.innerHTML = `<p>${t.videosEmpty}</p>`;
-    return;
-  }
-
-  videosContainer.innerHTML = data.map(video => {
-    const title = escapeHTML(video.title);
-    const description = escapeHTML(video.description);
-    const thumbnail = escapeHTML(video.thumbnail_url || "");
-    const videoUrl = escapeHTML(video.video_url || "");
-    const embedUrl = getVideoEmbed(video.video_url || "");
-
-    let player = "";
-
-    if (embedUrl) {
-      player = `
-        <iframe
-          src="${escapeHTML(embedUrl)}"
-          title="${title}"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen>
-        </iframe>`;
-    } else if (videoUrl) {
-      player = `
-        <video controls preload="metadata" ${thumbnail ? `poster="${thumbnail}"` : ""}>
-          <source src="${videoUrl}">
-        </video>`;
+    if (error) {
+      console.error("Videos error:", error);
+      videosContainer.innerHTML =
+        `<p>Videos error: ${escapeHTML(error.message)}</p>`;
+      return;
     }
 
-    const languageLabel = video.language
-      ? `<span class="video-language">${escapeHTML(video.language.toUpperCase())}</span>`
-      : "";
+    if (!data || data.length === 0) {
+      videosContainer.innerHTML = `<p>${t.videosEmpty}</p>`;
+      return;
+    }
 
-    return `
-      <article class="video-card">
-        <div class="video-player">
-          ${player || (thumbnail ? `<img src="${thumbnail}" alt="${title}" loading="lazy">` : "")}
-        </div>
-        <div class="video-info">
-          ${languageLabel}
-          <h3>${title}</h3>
-          ${description ? `<p>${description}</p>` : ""}
-        </div>
-      </article>
-    `;
-  }).join("");
+    videosContainer.innerHTML = data.map(video => {
+      const title = escapeHTML(video.title);
+      const description = escapeHTML(video.description);
+      const thumbnail = escapeHTML(video.thumbnail_url || "");
+      const videoUrl = escapeHTML(video.video_url || "");
+      const embedUrl = getVideoEmbed(video.video_url || "");
+
+      let player = "";
+
+      if (embedUrl) {
+        player = `
+          <iframe
+            src="${escapeHTML(embedUrl)}"
+            title="${title}"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>`;
+      } else if (videoUrl) {
+        player = `
+          <video controls preload="metadata" ${thumbnail ? `poster="${thumbnail}"` : ""}>
+            <source src="${videoUrl}">
+          </video>`;
+      }
+
+      const languageLabel = video.language
+        ? `<span class="video-language">${escapeHTML(video.language.toUpperCase())}</span>`
+        : "";
+
+      return `
+        <article class="video-card">
+          <div class="video-player">
+            ${player || (thumbnail ? `<img src="${thumbnail}" alt="${title}" loading="lazy">` : "")}
+          </div>
+          <div class="video-info">
+            ${languageLabel}
+            <h3>${title}</h3>
+            ${description ? `<p>${description}</p>` : ""}
+          </div>
+        </article>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Videos exception:", error);
+    videosContainer.innerHTML =
+      `<p>Videos error: ${escapeHTML(error.message || error)}</p>`;
+  }
 }
 
-language.addEventListener("change", event => {
-  setLanguage(event.target.value);
-});
+if (language) {
+  language.addEventListener("change", event => {
+    setLanguage(event.target.value);
+  });
 
-language.value = currentLanguage;
+  language.value = currentLanguage;
+}
+
 setLanguage(currentLanguage);
 
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearElement = document.getElementById("year");
+if (yearElement) {
+  yearElement.textContent = new Date().getFullYear();
+}
