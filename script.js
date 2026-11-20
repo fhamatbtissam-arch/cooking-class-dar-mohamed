@@ -44,6 +44,23 @@ const videosContainer = document.getElementById("videos-list");
 
 let currentLanguage = localStorage.getItem("darMohamedLanguage") || "en";
 
+/* ترجمة حقوق الموقع حسب اللغة المختارة */
+function updateCopyright() {
+  const copyrightElement = document.getElementById("copyright-text");
+  if (!copyrightElement) return;
+
+  const year = new Date().getFullYear();
+
+  const copyrightTranslations = {
+    en: `© ${year} Dar Mohamed. All rights reserved. Copying or reusing any content from this website without the owner's prior permission is prohibited.`,
+    fr: `© ${year} Dar Mohamed. Tous droits réservés. Toute copie ou réutilisation du contenu du site est interdite sans l'autorisation préalable du propriétaire.`,
+    ar: `© ${year} دار محمد. جميع الحقوق محفوظة. يُمنع نسخ أو إعادة استعمال محتوى الموقع دون إذن مسبق من المالك.`
+  };
+
+  copyrightElement.textContent =
+    copyrightTranslations[currentLanguage] || copyrightTranslations.en;
+}
+
 /* ربط محتوى لوحة الإدارة مع الصفحة الرئيسية */
 const contentTargets = {
   hero: {
@@ -158,6 +175,7 @@ async function setLanguage(lang) {
 
   if (language) language.value = currentLanguage;
 
+  updateCopyright();
   await loadSiteContent();
   loadProducts();
   loadVideos();
