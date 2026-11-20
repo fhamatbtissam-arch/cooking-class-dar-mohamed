@@ -13,6 +13,42 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    .brand-name {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .meta-verification {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      color: #68796f;
+      font-family: "DM Sans", Arial, sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: .1px;
+      white-space: nowrap;
+    }
+
+    .meta-check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #1877f2;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -20,7 +56,16 @@
 <header class="site-header">
   <a class="brand" href="#home" aria-label="Cooking Class with Dar Mohamed home">
     <span class="brand-mark">م</span>
-    <span>Cooking Class <small>with Dar Mohamed</small></span>
+
+    <span class="brand-name">
+      Cooking Class
+      <small>with Dar Mohamed</small>
+
+      <small class="meta-verification">
+        <span class="meta-check">✓</span>
+        Verified par Meta Console
+      </small>
+    </span>
   </a>
 
   <nav class="desktop-nav">
