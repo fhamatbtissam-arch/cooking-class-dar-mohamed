@@ -53,12 +53,14 @@ function showDashboard() {
     <h1>لوحة إدارة Dar Mohamed</h1>
     <button id="bookingsTab">الحجوزات</button>
     <button id="productsTab">المنتجات</button>
+    <button id="videosTab">الفيديوهات</button>
     <button id="logoutButton">تسجيل الخروج</button>
     <div id="dashboardContent"></div>
   `;
 
   document.getElementById("bookingsTab").onclick = loadBookings;
   document.getElementById("productsTab").onclick = loadProducts;
+  document.getElementById("videosTab").onclick = loadVideos;
 
   document.getElementById("logoutButton").onclick = async () => {
     await supabase.auth.signOut();
@@ -258,7 +260,6 @@ function productForm(product = null) {
     try {
       const f = new FormData(editor);
       let imageUrl = product?.image_url || "";
-
       const photo = photoInput.files[0];
 
       if (photo) {
@@ -313,6 +314,172 @@ function productForm(product = null) {
       alert("وقع خطأ: " + error.message);
       button.disabled = false;
       button.textContent = "حفظ المنتج";
+    }
+  };
+}
+
+/* إدارة الفيديوهات */
+
+async function loadVideos() {
+  const area = document.getElementById("dashboardContent");
+
+  area.innerHTML = `
+    <h2>إدارة الفيديوهات</h2>
+    <button id="addVideo">إضافة فيديو جديد</button>
+    <div id="videoFormArea"></div>
+    <div id="videosList">جاري تحميل الفيديوهات...</div>
+  `;
+
+  document.getElementById("addVideo").onclick = () => videoForm();
+
+  const { data, error } = await supabase
+    .from("videos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const list = document.getElementById("videosList");
+
+  if (error) {
+    list.textContent = "خطأ: " + error.message;
+    return;
+  }
+
+  if (!data.length) {
+    list.textContent = "لا توجد فيديوهات حاليا.";
+    return;
+  }
+
+  list.innerHTML = data.map(v => `
+    <div style="background:white;padding:15px;margin:12px 0;border-radius:10px">
+      ${v.thumbnail_url ? `
+        <img src="${safe(v.thumbnail_url)}"
+          style="width:180px;max-width:100%;border-radius:8px">
+      ` : ""}
+      <h3>${safe(v.title)}</h3>
+      <p>${safe(v.description)}</p>
+      <p>اللغة: ${safe(v.language)}</p>
+      <p>الحالة: ${v.is_active ? "ظاهر في الموقع" : "مخفي"}</p>
+      <button data-video-edit="${safe(v.id)}">تعديل</button>
+      <button data-video-delete="${safe(v.id)}">حذف</button>
+    </div>
+  `).join("");
+
+  list.querySelectorAll("[data-video-edit]").forEach(button => {
+    button.onclick = () => {
+      const video = data.find(v => String(v.id) === button.dataset.videoEdit);
+      videoForm(video);
+    };
+  });
+
+  list.querySelectorAll("[data-video-delete]").forEach(button => {
+    button.onclick = async () => {
+      if (!confirm("واش متأكد بغيتي تحذف هاد الفيديو؟")) return;
+
+      const { error } = await supabase
+        .from("videos")
+        .delete()
+        .eq("id", button.dataset.videoDelete);
+
+      if (error) {
+        alert("خطأ: " + error.message);
+      } else {
+        alert("تم حذف الفيديو.");
+        loadVideos();
+      }
+    };
+  });
+}
+
+function videoForm(video = null) {
+  const area = document.getElementById("videoFormArea");
+
+  area.innerHTML = `
+    <h3>${video ? "تعديل الفيديو" : "إضافة فيديو جديد"}</h3>
+
+    <form id="videoEditor">
+      <label>عنوان الفيديو</label>
+      <input name="title" required value="${safe(video?.title)}">
+
+      <label>الوصف</label>
+      <textarea name="description">${safe(video?.description)}</textarea>
+
+      <label>رابط الفيديو</label>
+      <input
+        name="video_url"
+        type="url"
+        required
+        placeholder="https://..."
+        value="${safe(video?.video_url)}"
+      >
+
+      <label>رابط الصورة المصغرة</label>
+      <input
+        name="thumbnail_url"
+        type="url"
+        placeholder="https://..."
+        value="${safe(video?.thumbnail_url)}"
+      >
+
+      <label>اللغة</label>
+      <select name="language">
+        <option value="en" ${video?.language === "en" ? "selected" : ""}>English</option>
+        <option value="fr" ${video?.language === "fr" ? "selected" : ""}>Français</option>
+        <option value="ar" ${video?.language === "ar" ? "selected" : ""}>العربية</option>
+      </select>
+
+      <label>
+        <input
+          name="is_active"
+          type="checkbox"
+          ${video?.is_active !== false ? "checked" : ""}
+        >
+        إظهار الفيديو في الموقع
+      </label>
+
+      <button type="submit">حفظ الفيديو</button>
+      <button type="button" id="cancelVideo">إلغاء</button>
+    </form>
+  `;
+
+  const editor = document.getElementById("videoEditor");
+
+  document.getElementById("cancelVideo").onclick = () => {
+    area.innerHTML = "";
+  };
+
+  editor.onsubmit = async event => {
+    event.preventDefault();
+
+    const button = editor.querySelector('[type="submit"]');
+    button.disabled = true;
+    button.textContent = "جاري الحفظ...";
+
+    try {
+      const f = new FormData(editor);
+
+      const item = {
+        title: f.get("title").trim(),
+        description: f.get("description"),
+        video_url: f.get("video_url").trim(),
+        thumbnail_url: f.get("thumbnail_url").trim(),
+        language: f.get("language"),
+        is_active: f.get("is_active") === "on"
+      };
+
+      const result = video
+        ? await supabase.from("videos").update(item).eq("id", video.id)
+        : await supabase.from("videos").insert(item);
+
+      if (result.error) throw result.error;
+
+      alert("تم حفظ الفيديو بنجاح.");
+      area.innerHTML = "";
+      loadVideos();
+
+    } catch (error) {
+      alert("وقع خطأ: " + error.message);
+      button.disabled = false;
+      button.textContent = "حفظ الفيديو";
     }
   };
 }
