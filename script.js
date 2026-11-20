@@ -16,6 +16,7 @@ const translations = {
     videosEyebrow:"WATCH & DISCOVER",videosTitle:"Our Videos",videosIntro:"Discover Moroccan cooking through our videos.",videosLoading:"Loading videos...",videosEmpty:"No videos available at the moment.",videosError:"Unable to load videos.",
     quote:"“The best way to discover a culture is through its food.”",moments:"MOMENTS TO SHARE",galleryTitle:"Inside the Moroccan kitchen",madeForYou:"MADE FOR YOU",personalTitle:"Your time. Your menu. Your experience.",personalText:"The class duration is flexible and arranged according to your request. The price depends on the duration and is personally set by Mohamed. Contact him to discuss your ideal experience and receive a quote.",askPrice:"Ask Mohamed for a quote",letsPlan:"LET'S PLAN YOUR EXPERIENCE",contactTitle:"Ready to cook in Fes?",contactText:"Tell Mohamed what you would like to cook, how much time you have, and whether you would like to visit the market.",whatsapp:"Contact on WhatsApp"
   },
+
   fr: {
     navExperience:"L’expérience",navProducts:"Produits",navVideos:"Vidéos",navGallery:"Galerie",navAbout:"À propos de Mohamed",navContact:"Contact",book:"Réserver",
     heroEyebrow:"FÈS · MAROC",heroTitle:"Découvrez l’art de la cuisine marocaine",heroText:"Cuisinez, dégustez et découvrez le Maroc avec Mohamed — un cours de cuisine selon vos envies.",bookExperience:"Réserver votre expérience",discover:"Découvrir l’expérience",heroNote:"Cuisine authentique · Culture locale · Expérience personnelle",
@@ -25,6 +26,7 @@ const translations = {
     videosEyebrow:"REGARDEZ ET DÉCOUVREZ",videosTitle:"Nos vidéos",videosIntro:"Découvrez la cuisine marocaine à travers nos vidéos.",videosLoading:"Chargement des vidéos...",videosEmpty:"Aucune vidéo disponible pour le moment.",videosError:"Impossible de charger les vidéos.",
     quote:"« La meilleure façon de découvrir une culture, c’est par sa cuisine. »",moments:"DES MOMENTS À PARTAGER",galleryTitle:"Au cœur de la cuisine marocaine",madeForYou:"UNE EXPÉRIENCE SUR MESURE",personalTitle:"Votre temps. Votre menu. Votre expérience.",personalText:"La durée du cours est flexible et définie selon votre demande. Le tarif dépend de la durée et est fixé personnellement par Mohamed. Contactez-le pour discuter de votre expérience idéale et recevoir un devis.",askPrice:"Demander un devis à Mohamed",letsPlan:"PRÉPARONS VOTRE EXPÉRIENCE",contactTitle:"Prêt à cuisiner à Fès ?",contactText:"Dites à Mohamed ce que vous souhaitez cuisiner, le temps dont vous disposez et si vous souhaitez visiter le marché.",whatsapp:"Contacter sur WhatsApp"
   },
+
   ar: {
     navExperience:"التجربة",navProducts:"منتجاتنا",navVideos:"الفيديوهات",navGallery:"معرض الصور",navAbout:"عن محمد",navContact:"اتصل بنا",book:"احجز الآن",
     heroEyebrow:"فاس · المغرب",heroTitle:"اكتشفوا فن الطبخ المغربي",heroText:"تعلموا الطبخ واكتشفوا نكهات وثقافة المغرب مع محمد، في تجربة على حسب اختياركم.",bookExperience:"احجزوا تجربتكم",discover:"اكتشفوا التجربة",heroNote:"مطبخ أصيل · ثقافة محلية · تجربة شخصية",
@@ -42,6 +44,33 @@ const videosContainer = document.getElementById("videos-list");
 
 let currentLanguage = localStorage.getItem("darMohamedLanguage") || "en";
 
+/* ربط محتوى لوحة الإدارة مع الصفحة الرئيسية */
+const contentTargets = {
+  hero: {
+    title: ["heroTitle"],
+    content: ["heroText"]
+  },
+  intro: {
+    title: ["introTitle"],
+    content: ["introText"]
+  },
+  experience: {
+    title: ["experienceTitle"],
+    content: ["experienceIntro"]
+  },
+  gallery: {
+    title: ["galleryTitle"]
+  },
+  personal: {
+    title: ["personalTitle"],
+    content: ["personalText"]
+  },
+  contact: {
+    title: ["contactTitle"],
+    content: ["contactText"]
+  }
+};
+
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -52,7 +81,62 @@ function escapeHTML(value) {
   })[char]);
 }
 
-function setLanguage(lang) {
+function applySiteContent(rows) {
+  rows.forEach(item => {
+    const targets = contentTargets[item.section];
+
+    if (!targets) return;
+
+    if (item.title && targets.title) {
+      targets.title.forEach(key => {
+        const element = document.querySelector(`[data-i18n="${key}"]`);
+        if (element) element.textContent = item.title;
+      });
+    }
+
+    if (item.content && targets.content) {
+      targets.content.forEach(key => {
+        const element = document.querySelector(`[data-i18n="${key}"]`);
+        if (element) element.textContent = item.content;
+      });
+    }
+
+    /* صور قسم الواجهة والتعريف */
+    if (item.image_url) {
+      if (item.section === "hero") {
+        const image = document.querySelector(".hero-photo img");
+        if (image) image.src = item.image_url;
+      }
+
+      if (item.section === "intro") {
+        const image = document.querySelector(".intro-image img");
+        if (image) image.src = item.image_url;
+      }
+    }
+  });
+}
+
+async function loadSiteContent() {
+  try {
+    const { data, error } = await supabase
+      .from("site_content")
+      .select("section,language,title,content,image_url")
+      .eq("language", currentLanguage);
+
+    if (error) {
+      console.error("Site content error:", error);
+      return;
+    }
+
+    if (data && data.length) {
+      applySiteContent(data);
+    }
+  } catch (error) {
+    console.error("Site content exception:", error);
+  }
+}
+
+async function setLanguage(lang) {
   const t = translations[lang] || translations.en;
   currentLanguage = translations[lang] ? lang : "en";
 
@@ -72,6 +156,9 @@ function setLanguage(lang) {
 
   localStorage.setItem("darMohamedLanguage", currentLanguage);
 
+  if (language) language.value = currentLanguage;
+
+  await loadSiteContent();
   loadProducts();
   loadVideos();
 }
