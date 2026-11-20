@@ -2,7 +2,8 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 const SUPABASE_URL = "https://fbvhigcgcmyhznclukov.supabase.co";
-const SUPABASE_KEY = "حط_هنا_sb_publishable_ديالك";
+
+const SUPABASE_KEY = "sb_publishable_BVGY1F_M8eYyADwebBtiSw_5Kud29yK";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -17,28 +18,32 @@ form.addEventListener("submit", async (event) => {
 
   message.textContent = "جاري تسجيل الدخول...";
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
 
-  if (error) {
+    if (error) throw error;
+
+    const { data: admin, error: adminError } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
+
+    if (adminError) throw adminError;
+
+    if (!admin) {
+      await supabase.auth.signOut();
+      message.textContent = "هذا الحساب ليس لديه صلاحية الإدارة.";
+      return;
+    }
+
+    message.textContent = "تم تسجيل الدخول بنجاح!";
+    form.innerHTML = "<h2>مرحبا بك في لوحة الإدارة</h2>";
+
+  } catch (error) {
     message.textContent = "خطأ في تسجيل الدخول: " + error.message;
-    return;
   }
-
-  const { data: admin, error: adminError } = await supabase
-    .from("admin_users")
-    .select("user_id")
-    .eq("user_id", data.user.id)
-    .maybeSingle();
-
-  if (adminError || !admin) {
-    await supabase.auth.signOut();
-    message.textContent = "هاد الحساب ما عندوش صلاحية الإدارة.";
-    return;
-  }
-
-  message.textContent = "تم تسجيل الدخول بنجاح!";
-  form.innerHTML = "<h2>مرحبا بك في لوحة الإدارة</h2><p>تم التحقق من صلاحياتك.</p>";
 });
