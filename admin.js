@@ -28,6 +28,7 @@ form.addEventListener("submit", async (event) => {
       .maybeSingle();
 
     if (adminError) throw adminError;
+
     if (!admin) {
       await supabase.auth.signOut();
       message.textContent = "ليس لديك صلاحية الإدارة.";
@@ -40,6 +41,13 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
 function showDashboard() {
   document.querySelector(".container").innerHTML = `
     <h1>لوحة إدارة Dar Mohamed</h1>
@@ -51,19 +59,13 @@ function showDashboard() {
 
   document.getElementById("bookingsTab").onclick = loadBookings;
   document.getElementById("productsTab").onclick = loadProducts;
+
   document.getElementById("logoutButton").onclick = async () => {
     await supabase.auth.signOut();
     location.reload();
   };
 
   loadBookings();
-}
-
-function safe(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;",
-    '"': "&quot;", "'": "&#39;"
-  })[char]);
 }
 
 async function loadBookings() {
@@ -130,12 +132,12 @@ async function loadBookings() {
 
 async function loadProducts() {
   const area = document.getElementById("dashboardContent");
+
   area.innerHTML = `
     <h2>إدارة المنتجات</h2>
     <button id="addProduct">إضافة منتج جديد</button>
     <div id="productFormArea"></div>
-    <p>جاري تحميل المنتجات...</p>
-    <div id="productsList"></div>
+    <div id="productsList">جاري تحميل المنتجات...</div>
   `;
 
   document.getElementById("addProduct").onclick = () => productForm();
@@ -145,12 +147,12 @@ async function loadProducts() {
     .select("*")
     .order("created_at", { ascending: false });
 
+  const list = document.getElementById("productsList");
+
   if (error) {
-    area.querySelector("#productsList").textContent = "خطأ: " + error.message;
+    list.textContent = "خطأ: " + error.message;
     return;
   }
-
-  const list = document.getElementById("productsList");
 
   if (!data.length) {
     list.textContent = "لا توجد منتجات حاليا.";
@@ -158,7 +160,8 @@ async function loadProducts() {
   }
 
   list.innerHTML = data.map(p => `
-    <div style="background:#fff;padding:15px;margin:12px 0;border-radius:10px">
+    <div style="background:white;padding:15px;margin:12px 0;border-radius:10px">
+      ${p.image_url ? `<img src="${safe(p.image_url)}" style="width:100px;height:100px;object-fit:cover;border-radius:8px">` : ""}
       <h3>${safe(p.name)}</h3>
       <p>${safe(p.description)}</p>
       <p>الثمن: ${safe(p.price)} | المخزون: ${safe(p.stock)}</p>
@@ -197,7 +200,8 @@ function productForm(product = null) {
   const area = document.getElementById("productFormArea");
 
   area.innerHTML = `
-    <h3>${product ? "تعديل المنتج" : "إضافة منتج"}</h3>
+    <h3>${product ? "تعديل المنتج" : "إضافة منتج جديد"}</h3>
+
     <form id="productEditor">
       <label>اسم المنتج</label>
       <input name="name" required value="${safe(product?.name)}">
@@ -208,8 +212,12 @@ function productForm(product = null) {
       <label>الثمن</label>
       <input name="price" type="number" min="0" step="0.01" required value="${safe(product?.price)}">
 
-      <label>رابط الصورة</label>
-      <input name="image_url" type="url" value="${safe(product?.image_url)}">
+      <label>اختيار صورة من الهاتف</label>
+      <input name="photo" type="file" accept="image/*">
+
+      <p id="photoMessage">اختار صورة للمنتج</p>
+
+      ${product?.image_url ? `<img src="${safe(product.image_url)}" style="width:110px;border-radius:8px">` : ""}
 
       <label>الصنف</label>
       <input name="category" value="${safe(product?.category)}">
@@ -227,35 +235,84 @@ function productForm(product = null) {
     </form>
   `;
 
+  const editor = document.getElementById("productEditor");
+  const photoInput = editor.elements.photo;
+
+  photoInput.onchange = () => {
+    const file = photoInput.files[0];
+    document.getElementById("photoMessage").textContent =
+      file ? "الصورة المختارة: " + file.name : "اختار صورة للمنتج";
+  };
+
   document.getElementById("cancelProduct").onclick = () => {
     area.innerHTML = "";
   };
 
-  document.getElementById("productEditor").onsubmit = async event => {
+  editor.onsubmit = async event => {
     event.preventDefault();
 
-    const f = new FormData(event.target);
-    const item = {
-      name: f.get("name").trim(),
-      description: f.get("description"),
-      price: Number(f.get("price")),
-      image_url: f.get("image_url"),
-      category: f.get("category"),
-      stock: Number(f.get("stock") || 0),
-      is_active: f.get("is_active") === "on"
-    };
+    const button = editor.querySelector('[type="submit"]');
+    button.disabled = true;
+    button.textContent = "جاري الحفظ...";
 
-    const result = product
-      ? await supabase.from("products").update(item).eq("id", product.id)
-      : await supabase.from("products").insert(item);
+    try {
+      const f = new FormData(editor);
+      let imageUrl = product?.image_url || "";
 
-    if (result.error) {
-      alert("خطأ في الحفظ: " + result.error.message);
-      return;
+      const photo = photoInput.files[0];
+
+      if (photo) {
+        if (!photo.type.startsWith("image/")) {
+          throw new Error("اختار ملف صورة فقط.");
+        }
+
+        if (photo.size > 5 * 1024 * 1024) {
+          throw new Error("حجم الصورة خاصو يكون أقل من 5 ميغابايت.");
+        }
+
+        const extension = photo.name.split(".").pop().toLowerCase();
+        const path = "products/" + crypto.randomUUID() + "." + extension;
+
+        const { error: uploadError } = await supabase.storage
+          .from("site-images")
+          .upload(path, photo, {
+            contentType: photo.type,
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: imageData } = supabase.storage
+          .from("site-images")
+          .getPublicUrl(path);
+
+        imageUrl = imageData.publicUrl;
+      }
+
+      const item = {
+        name: f.get("name").trim(),
+        description: f.get("description"),
+        price: Number(f.get("price")),
+        image_url: imageUrl,
+        category: f.get("category"),
+        stock: Number(f.get("stock") || 0),
+        is_active: f.get("is_active") === "on"
+      };
+
+      const result = product
+        ? await supabase.from("products").update(item).eq("id", product.id)
+        : await supabase.from("products").insert(item);
+
+      if (result.error) throw result.error;
+
+      alert("تم حفظ المنتج بنجاح.");
+      area.innerHTML = "";
+      loadProducts();
+
+    } catch (error) {
+      alert("وقع خطأ: " + error.message);
+      button.disabled = false;
+      button.textContent = "حفظ المنتج";
     }
-
-    alert("تم حفظ المنتج بنجاح.");
-    area.innerHTML = "";
-    loadProducts();
   };
 }
