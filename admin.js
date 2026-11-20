@@ -56,16 +56,20 @@ function safe(value) {
 function showDashboard() {
   document.querySelector(".container").innerHTML = `
     <h1>لوحة إدارة Dar Mohamed</h1>
+
     <button id="bookingsTab">الحجوزات</button>
     <button id="productsTab">المنتجات</button>
     <button id="videosTab">الفيديوهات</button>
+    <button id="contentTab">محتوى الموقع</button>
     <button id="logoutButton">تسجيل الخروج</button>
+
     <div id="dashboardContent"></div>
   `;
 
   document.getElementById("bookingsTab").onclick = loadBookings;
   document.getElementById("productsTab").onclick = loadProducts;
   document.getElementById("videosTab").onclick = loadVideos;
+  document.getElementById("contentTab").onclick = loadSiteContent;
 
   document.getElementById("logoutButton").onclick = async () => {
     await supabase.auth.signOut();
@@ -556,6 +560,213 @@ function videoForm(video = null) {
       alert("وقع خطأ: " + error.message);
       button.disabled = false;
       button.textContent = "حفظ الفيديو";
+    }
+  };
+}
+
+/* محتوى الموقع */
+
+async function loadSiteContent() {
+  const area = document.getElementById("dashboardContent");
+
+  area.innerHTML = `
+    <h2>إدارة محتوى الموقع</h2>
+    <p>من هنا تقدر تبدل النصوص والصور ديال الموقع.</p>
+    <button id="addContent">إضافة محتوى جديد</button>
+    <div id="contentFormArea"></div>
+    <div id="contentList">جاري تحميل المحتوى...</div>
+  `;
+
+  document.getElementById("addContent").onclick = () => contentForm();
+
+  const list = document.getElementById("contentList");
+
+  const { data, error } = await supabase
+    .from("site_content")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    list.textContent = "خطأ في تحميل المحتوى: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = "<p>مازال ما ضفنا حتى محتوى. ضغط على إضافة محتوى جديد.</p>";
+    return;
+  }
+
+  list.innerHTML = data.map(item => `
+    <div style="background:white;padding:15px;margin:12px 0;border-radius:10px">
+      <h3>${safe(item.title)}</h3>
+      <p>القسم: ${safe(item.section)}</p>
+      <p>اللغة: ${safe(item.language)}</p>
+      <p>${safe(item.content)}</p>
+      ${item.image_url ? `
+        <img src="${safe(item.image_url)}"
+          style="width:130px;height:100px;object-fit:cover;border-radius:8px">
+      ` : ""}
+      <br>
+      <button data-content-edit="${safe(item.id)}">تعديل</button>
+      <button data-content-delete="${safe(item.id)}">حذف</button>
+    </div>
+  `).join("");
+
+  list.querySelectorAll("[data-content-edit]").forEach(button => {
+    button.onclick = () => {
+      const item = data.find(x => String(x.id) === button.dataset.contentEdit);
+      contentForm(item);
+    };
+  });
+
+  list.querySelectorAll("[data-content-delete]").forEach(button => {
+    button.onclick = async () => {
+      if (!confirm("واش متأكد بغيتي تحذف هاد المحتوى؟")) return;
+
+      const { error } = await supabase
+        .from("site_content")
+        .delete()
+        .eq("id", button.dataset.contentDelete);
+
+      if (error) {
+        alert("خطأ: " + error.message);
+      } else {
+        alert("تم حذف المحتوى.");
+        loadSiteContent();
+      }
+    };
+  });
+}
+
+function contentForm(item = null) {
+  const area = document.getElementById("contentFormArea");
+
+  area.innerHTML = `
+    <h3>${item ? "تعديل المحتوى" : "إضافة محتوى جديد"}</h3>
+
+    <form id="contentEditor">
+      <label>القسم</label>
+      <select name="section" required>
+        <option value="hero" ${item?.section === "hero" ? "selected" : ""}>الواجهة الرئيسية</option>
+        <option value="intro" ${item?.section === "intro" ? "selected" : ""}>التعريف بالمطبخ</option>
+        <option value="experience" ${item?.section === "experience" ? "selected" : ""}>التجربة</option>
+        <option value="gallery" ${item?.section === "gallery" ? "selected" : ""}>معرض الصور</option>
+        <option value="personal" ${item?.section === "personal" ? "selected" : ""}>التجربة الشخصية</option>
+        <option value="contact" ${item?.section === "contact" ? "selected" : ""}>التواصل</option>
+      </select>
+
+      <label>اللغة</label>
+      <select name="language" required>
+        <option value="en" ${item?.language === "en" ? "selected" : ""}>English</option>
+        <option value="fr" ${item?.language === "fr" ? "selected" : ""}>Français</option>
+        <option value="ar" ${item?.language === "ar" ? "selected" : ""}>العربية</option>
+      </select>
+
+      <label>العنوان</label>
+      <input name="title" value="${safe(item?.title)}" required>
+
+      <label>النص أو الوصف</label>
+      <textarea name="content" rows="5">${safe(item?.content)}</textarea>
+
+      <label>اختيار صورة من الهاتف</label>
+      <input name="photo" type="file" accept="image/*">
+
+      <p id="contentPhotoMessage">يمكنك اختيار صورة من الهاتف.</p>
+
+      ${item?.image_url ? `
+        <img src="${safe(item.image_url)}"
+          style="width:130px;border-radius:8px">
+      ` : ""}
+
+      <button type="submit">حفظ المحتوى</button>
+      <button type="button" id="cancelContent">إلغاء</button>
+    </form>
+  `;
+
+  const editor = document.getElementById("contentEditor");
+  const photoInput = editor.elements.photo;
+
+  photoInput.onchange = () => {
+    const file = photoInput.files[0];
+    document.getElementById("contentPhotoMessage").textContent =
+      file ? "الصورة المختارة: " + file.name : "يمكنك اختيار صورة من الهاتف.";
+  };
+
+  document.getElementById("cancelContent").onclick = () => {
+    area.innerHTML = "";
+  };
+
+  editor.onsubmit = async event => {
+    event.preventDefault();
+
+    const button = editor.querySelector('[type="submit"]');
+    button.disabled = true;
+    button.textContent = "جاري الحفظ...";
+
+    try {
+      const f = new FormData(editor);
+      let imageUrl = item?.image_url || "";
+      const photo = photoInput.files[0];
+
+      if (photo) {
+        if (!photo.type.startsWith("image/")) {
+          throw new Error("اختار ملف صورة فقط.");
+        }
+
+        if (photo.size > 5 * 1024 * 1024) {
+          throw new Error("حجم الصورة خاصو يكون أقل من 5 ميغابايت.");
+        }
+
+        button.textContent = "جاري رفع الصورة...";
+
+        const extension = photo.name.split(".").pop().toLowerCase();
+        const path = "content/" + crypto.randomUUID() + "." + extension;
+
+        const { error: uploadError } = await supabase.storage
+          .from("site-images")
+          .upload(path, photo, {
+            contentType: photo.type,
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: imageData } = supabase.storage
+          .from("site-images")
+          .getPublicUrl(path);
+
+        imageUrl = imageData.publicUrl;
+      }
+
+      const contentItem = {
+        section: f.get("section"),
+        language: f.get("language"),
+        title: f.get("title").trim(),
+        content: f.get("content"),
+        image_url: imageUrl
+      };
+
+      button.textContent = "جاري حفظ المحتوى...";
+
+      const result = item
+        ? await supabase
+            .from("site_content")
+            .update(contentItem)
+            .eq("id", item.id)
+        : await supabase
+            .from("site_content")
+            .insert(contentItem);
+
+      if (result.error) throw result.error;
+
+      alert("تم حفظ المحتوى بنجاح.");
+      area.innerHTML = "";
+      loadSiteContent();
+
+    } catch (error) {
+      alert("وقع خطأ: " + error.message);
+      button.disabled = false;
+      button.textContent = "حفظ المحتوى";
     }
   };
 }
