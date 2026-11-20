@@ -43,10 +43,15 @@ form.addEventListener("submit", async (event) => {
 
 function safe(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;",
-    '"': "&quot;", "'": "&#39;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
   })[char]);
 }
+
+/* لوحة الإدارة */
 
 function showDashboard() {
   document.querySelector(".container").innerHTML = `
@@ -69,6 +74,8 @@ function showDashboard() {
 
   loadBookings();
 }
+
+/* الحجوزات */
 
 async function loadBookings() {
   const area = document.getElementById("dashboardContent");
@@ -93,10 +100,17 @@ async function loadBookings() {
     <h2>الحجوزات (${data.length})</h2>
     <div style="overflow-x:auto">
       <table style="width:100%;min-width:650px;border-collapse:collapse">
-        <thead><tr>
-          <th>الاسم</th><th>البريد</th><th>الهاتف</th>
-          <th>التاريخ</th><th>الأشخاص</th><th>الرسالة</th><th>الحالة</th>
-        </tr></thead>
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>البريد</th>
+            <th>الهاتف</th>
+            <th>التاريخ</th>
+            <th>الأشخاص</th>
+            <th>الرسالة</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
         <tbody>
           ${data.map(b => `
             <tr>
@@ -113,7 +127,8 @@ async function loadBookings() {
                   <option value="cancelled" ${b.status === "cancelled" ? "selected" : ""}>ملغى</option>
                 </select>
               </td>
-            </tr>`).join("")}
+            </tr>
+          `).join("")}
         </tbody>
       </table>
     </div>
@@ -131,6 +146,8 @@ async function loadBookings() {
     };
   });
 }
+
+/* المنتجات */
 
 async function loadProducts() {
   const area = document.getElementById("dashboardContent");
@@ -163,7 +180,10 @@ async function loadProducts() {
 
   list.innerHTML = data.map(p => `
     <div style="background:white;padding:15px;margin:12px 0;border-radius:10px">
-      ${p.image_url ? `<img src="${safe(p.image_url)}" style="width:100px;height:100px;object-fit:cover;border-radius:8px">` : ""}
+      ${p.image_url ? `
+        <img src="${safe(p.image_url)}"
+          style="width:100px;height:100px;object-fit:cover;border-radius:8px">
+      ` : ""}
       <h3>${safe(p.name)}</h3>
       <p>${safe(p.description)}</p>
       <p>الثمن: ${safe(p.price)} | المخزون: ${safe(p.stock)}</p>
@@ -189,8 +209,9 @@ async function loadProducts() {
         .delete()
         .eq("id", button.dataset.delete);
 
-      if (error) alert("خطأ: " + error.message);
-      else {
+      if (error) {
+        alert("خطأ: " + error.message);
+      } else {
         alert("تم حذف المنتج.");
         loadProducts();
       }
@@ -212,23 +233,29 @@ function productForm(product = null) {
       <textarea name="description">${safe(product?.description)}</textarea>
 
       <label>الثمن</label>
-      <input name="price" type="number" min="0" step="0.01" required value="${safe(product?.price)}">
+      <input name="price" type="number" min="0" step="0.01"
+        required value="${safe(product?.price)}">
 
       <label>اختيار صورة من الهاتف</label>
       <input name="photo" type="file" accept="image/*">
 
       <p id="photoMessage">اختار صورة للمنتج</p>
 
-      ${product?.image_url ? `<img src="${safe(product.image_url)}" style="width:110px;border-radius:8px">` : ""}
+      ${product?.image_url ? `
+        <img src="${safe(product.image_url)}"
+          style="width:110px;border-radius:8px">
+      ` : ""}
 
       <label>الصنف</label>
       <input name="category" value="${safe(product?.category)}">
 
       <label>المخزون</label>
-      <input name="stock" type="number" min="0" value="${safe(product?.stock ?? 0)}">
+      <input name="stock" type="number" min="0"
+        value="${safe(product?.stock ?? 0)}">
 
       <label>
-        <input name="is_active" type="checkbox" ${product?.is_active !== false ? "checked" : ""}>
+        <input name="is_active" type="checkbox"
+          ${product?.is_active !== false ? "checked" : ""}>
         منتج نشط
       </label>
 
@@ -318,7 +345,7 @@ function productForm(product = null) {
   };
 }
 
-/* إدارة الفيديوهات */
+/* الفيديوهات */
 
 async function loadVideos() {
   const area = document.getElementById("dashboardContent");
@@ -403,16 +430,22 @@ function videoForm(video = null) {
       <label>الوصف</label>
       <textarea name="description">${safe(video?.description)}</textarea>
 
-      <label>رابط الفيديو</label>
+      <label>اختيار فيديو من الهاتف</label>
+      <input name="video_file" type="file" accept="video/*">
+
+      <p id="videoFileMessage">
+        ${video?.video_url ? "يوجد فيديو محفوظ. اختار فيديو جديد إذا أردت تغييره." : "اختار الفيديو من الهاتف"}
+      </p>
+
+      <label>أو رابط الفيديو (اختياري)</label>
       <input
         name="video_url"
         type="url"
-        required
         placeholder="https://..."
         value="${safe(video?.video_url)}"
       >
 
-      <label>رابط الصورة المصغرة</label>
+      <label>رابط الصورة المصغرة (اختياري)</label>
       <input
         name="thumbnail_url"
         type="url"
@@ -428,11 +461,8 @@ function videoForm(video = null) {
       </select>
 
       <label>
-        <input
-          name="is_active"
-          type="checkbox"
-          ${video?.is_active !== false ? "checked" : ""}
-        >
+        <input name="is_active" type="checkbox"
+          ${video?.is_active !== false ? "checked" : ""}>
         إظهار الفيديو في الموقع
       </label>
 
@@ -442,6 +472,13 @@ function videoForm(video = null) {
   `;
 
   const editor = document.getElementById("videoEditor");
+  const videoInput = editor.elements.video_file;
+
+  videoInput.onchange = () => {
+    const file = videoInput.files[0];
+    document.getElementById("videoFileMessage").textContent =
+      file ? "الفيديو المختار: " + file.name : "اختار الفيديو من الهاتف";
+  };
 
   document.getElementById("cancelVideo").onclick = () => {
     area.innerHTML = "";
@@ -456,15 +493,54 @@ function videoForm(video = null) {
 
     try {
       const f = new FormData(editor);
+      const videoFile = videoInput.files[0];
+
+      let videoUrl = video?.video_url || f.get("video_url").trim();
+
+      if (videoFile) {
+        if (!videoFile.type.startsWith("video/")) {
+          throw new Error("اختار ملف فيديو فقط.");
+        }
+
+        if (videoFile.size > 50 * 1024 * 1024) {
+          throw new Error("حجم الفيديو خاصو يكون أقل من 50 ميغابايت.");
+        }
+
+        button.textContent = "جاري رفع الفيديو...";
+
+        const extension = videoFile.name.split(".").pop().toLowerCase();
+        const path = "videos/" + crypto.randomUUID() + "." + extension;
+
+        const { error: uploadError } = await supabase.storage
+          .from("site-videos")
+          .upload(path, videoFile, {
+            contentType: videoFile.type,
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: videoData } = supabase.storage
+          .from("site-videos")
+          .getPublicUrl(path);
+
+        videoUrl = videoData.publicUrl;
+      }
+
+      if (!videoUrl) {
+        throw new Error("اختار فيديو من الهاتف أو أدخل رابط الفيديو.");
+      }
 
       const item = {
         title: f.get("title").trim(),
         description: f.get("description"),
-        video_url: f.get("video_url").trim(),
+        video_url: videoUrl,
         thumbnail_url: f.get("thumbnail_url").trim(),
         language: f.get("language"),
         is_active: f.get("is_active") === "on"
       };
+
+      button.textContent = "جاري حفظ البيانات...";
 
       const result = video
         ? await supabase.from("videos").update(item).eq("id", video.id)
