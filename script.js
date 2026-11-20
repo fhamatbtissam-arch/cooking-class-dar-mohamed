@@ -2,7 +2,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://fbvhigcgcmyhznclukov.supabase.co";
-const SUPABASE_KEY = "sb_publishable_BVGY1F_M8eYyADwebBtiSw_5Kud29y";
+const SUPABASE_KEY = "sb_publishable_BVGY1F_M8eYyADwebBtiSw_5Kud29yK";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -54,7 +54,6 @@ function escapeHTML(value) {
 
 function setLanguage(lang) {
   const t = translations[lang] || translations.en;
-
   currentLanguage = translations[lang] ? lang : "en";
 
   document.documentElement.lang = currentLanguage;
@@ -92,8 +91,7 @@ async function loadProducts() {
 
     if (error) {
       console.error("Products error:", error);
-      productsContainer.innerHTML =
-        `<p>Products error: ${escapeHTML(error.message)}</p>`;
+      productsContainer.innerHTML = `<p>Products error: ${escapeHTML(error.message)}</p>`;
       return;
     }
 
@@ -141,8 +139,7 @@ async function loadProducts() {
 
   } catch (error) {
     console.error("Products exception:", error);
-    productsContainer.innerHTML =
-      `<p>Products error: ${escapeHTML(error.message || error)}</p>`;
+    productsContainer.innerHTML = `<p>Products error: ${escapeHTML(error.message || error)}</p>`;
   }
 }
 
@@ -194,8 +191,7 @@ async function loadVideos() {
 
     if (error) {
       console.error("Videos error:", error);
-      videosContainer.innerHTML =
-        `<p>Videos error: ${escapeHTML(error.message)}</p>`;
+      videosContainer.innerHTML = `<p>Videos error: ${escapeHTML(error.message)}</p>`;
       return;
     }
 
@@ -249,8 +245,7 @@ async function loadVideos() {
 
   } catch (error) {
     console.error("Videos exception:", error);
-    videosContainer.innerHTML =
-      `<p>Videos error: ${escapeHTML(error.message || error)}</p>`;
+    videosContainer.innerHTML = `<p>Videos error: ${escapeHTML(error.message || error)}</p>`;
   }
 }
 
