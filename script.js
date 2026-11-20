@@ -14,7 +14,8 @@ const translations = {
     yourExperience:"YOUR EXPERIENCE",experienceTitle:"More than a cooking class",experienceIntro:"A personal Moroccan food experience, shaped around your interests and your time.",feature1Title:"Choose your dishes",feature1Text:"Learn to prepare Moroccan dishes of your choice, from traditional favourites to recipes you are curious about.",feature2Title:"Explore the local market",feature2Text:"If you wish, join Mohamed to shop for ingredients and discover the sights, smells and flavours of a Moroccan souk.",optional:"Optional activity",feature3Title:"Cook side by side",feature3Text:"Get involved, learn practical techniques and discover the stories behind Moroccan food.",
     productsEyebrow:"OUR SELECTION",productsTitle:"Our Products",productsIntro:"Discover our selection of Moroccan products.",productsLoading:"Loading products...",productsEmpty:"No products available at the moment.",productsError:"Unable to load products.",productContact:"Contact us",
     videosEyebrow:"WATCH & DISCOVER",videosTitle:"Our Videos",videosIntro:"Discover Moroccan cooking through our videos.",videosLoading:"Loading videos...",videosEmpty:"No videos available at the moment.",videosError:"Unable to load videos.",
-    quote:"“The best way to discover a culture is through its food.”",moments:"MOMENTS TO SHARE",galleryTitle:"Inside the Moroccan kitchen",madeForYou:"MADE FOR YOU",personalTitle:"Your time. Your menu. Your experience.",personalText:"The class duration is flexible and arranged according to your request. The price depends on the duration and is personally set by Mohamed. Contact him to discuss your ideal experience and receive a quote.",askPrice:"Ask Mohamed for a quote",letsPlan:"LET'S PLAN YOUR EXPERIENCE",contactTitle:"Ready to cook in Fes?",contactText:"Tell Mohamed what you would like to cook, how much time you have, and whether you would like to visit the market.",whatsapp:"Contact on WhatsApp"
+    quote:"“The best way to discover a culture is through its food.”",moments:"MOMENTS TO SHARE",galleryTitle:"Inside the Moroccan kitchen",madeForYou:"MADE FOR YOU",personalTitle:"Your time. Your menu. Your experience.",personalText:"The class duration is flexible and arranged according to your request. The price depends on the duration and is personally set by Mohamed. Contact him to discuss your ideal experience and receive a quote.",askPrice:"Ask Mohamed for a quote",letsPlan:"LET'S PLAN YOUR EXPERIENCE",contactTitle:"Ready to cook in Fes?",contactText:"Tell Mohamed what you would like to cook, how much time you have, and whether you would like to visit the market.",whatsapp:"Contact on WhatsApp",
+    bookingTitle:"Book your cooking experience",bookingIntro:"Complete the form and Mohamed will contact you to confirm your booking.",bookingName:"Full name",bookingEmail:"Email address",bookingPhone:"Phone number",bookingDate:"Preferred date",bookingGuests:"Number of guests",bookingNote:"Additional details",bookingNotePlaceholder:"Tell us about the dishes you would like to prepare...",bookingSubmit:"Send booking request",bookingSending:"Sending...",bookingSuccess:"Your request has been sent successfully! Mohamed will contact you soon.",bookingError:"Sorry, your request could not be sent. Please try again or contact us on WhatsApp.",bookingRequired:"Please complete all required fields."
   },
 
   fr: {
@@ -24,7 +25,8 @@ const translations = {
     yourExperience:"VOTRE EXPÉRIENCE",experienceTitle:"Bien plus qu’un cours de cuisine",experienceIntro:"Une expérience culinaire marocaine personnalisée selon vos envies et votre disponibilité.",feature1Title:"Choisissez vos plats",feature1Text:"Apprenez à préparer les plats marocains de votre choix, des grands classiques aux recettes qui vous intriguent.",feature2Title:"Découvrez le marché local",feature2Text:"Si vous le souhaitez, accompagnez Mohamed pour acheter les ingrédients et découvrir les couleurs, les parfums et les saveurs d’un souk marocain.",optional:"Activité facultative",feature3Title:"Cuisinez ensemble",feature3Text:"Participez, apprenez des techniques pratiques et découvrez les histoires de la cuisine marocaine.",
     productsEyebrow:"NOTRE SÉLECTION",productsTitle:"Nos produits",productsIntro:"Découvrez notre sélection de produits marocains.",productsLoading:"Chargement des produits...",productsEmpty:"Aucun produit disponible pour le moment.",productsError:"Impossible de charger les produits.",productContact:"Nous contacter",
     videosEyebrow:"REGARDEZ ET DÉCOUVREZ",videosTitle:"Nos vidéos",videosIntro:"Découvrez la cuisine marocaine à travers nos vidéos.",videosLoading:"Chargement des vidéos...",videosEmpty:"Aucune vidéo disponible pour le moment.",videosError:"Impossible de charger les vidéos.",
-    quote:"« La meilleure façon de découvrir une culture, c’est par sa cuisine. »",moments:"DES MOMENTS À PARTAGER",galleryTitle:"Au cœur de la cuisine marocaine",madeForYou:"UNE EXPÉRIENCE SUR MESURE",personalTitle:"Votre temps. Votre menu. Votre expérience.",personalText:"La durée du cours est flexible et définie selon votre demande. Le tarif dépend de la durée et est fixé personnellement par Mohamed. Contactez-le pour discuter de votre expérience idéale et recevoir un devis.",askPrice:"Demander un devis à Mohamed",letsPlan:"PRÉPARONS VOTRE EXPÉRIENCE",contactTitle:"Prêt à cuisiner à Fès ?",contactText:"Dites à Mohamed ce que vous souhaitez cuisiner, le temps dont vous disposez et si vous souhaitez visiter le marché.",whatsapp:"Contacter sur WhatsApp"
+    quote:"« La meilleure façon de découvrir une culture, c’est par sa cuisine. »",moments:"DES MOMENTS À PARTAGER",galleryTitle:"Au cœur de la cuisine marocaine",madeForYou:"UNE EXPÉRIENCE SUR MESURE",personalTitle:"Votre temps. Votre menu. Votre expérience.",personalText:"La durée du cours est flexible et définie selon votre demande. Le tarif dépend de la durée et est fixé personnellement par Mohamed. Contactez-le pour discuter de votre expérience idéale et recevoir un devis.",askPrice:"Demander un devis à Mohamed",letsPlan:"PRÉPARONS VOTRE EXPÉRIENCE",contactTitle:"Prêt à cuisiner à Fès ?",contactText:"Dites à Mohamed ce que vous souhaitez cuisiner, le temps dont vous disposez et si vous souhaitez visiter le marché.",whatsapp:"Contacter sur WhatsApp",
+    bookingTitle:"Réservez votre expérience culinaire",bookingIntro:"Remplissez le formulaire et Mohamed vous contactera pour confirmer votre réservation.",bookingName:"Nom complet",bookingEmail:"Adresse e-mail",bookingPhone:"Téléphone",bookingDate:"Date souhaitée",bookingGuests:"Nombre de personnes",bookingNote:"Informations complémentaires",bookingNotePlaceholder:"Quels plats souhaitez-vous préparer ?",bookingSubmit:"Envoyer la demande",bookingSending:"Envoi en cours...",bookingSuccess:"Votre demande a bien été envoyée ! Mohamed vous contactera bientôt.",bookingError:"Désolé, votre demande n'a pas pu être envoyée. Réessayez ou contactez-nous sur WhatsApp.",bookingRequired:"Veuillez remplir tous les champs obligatoires."
   },
 
   ar: {
@@ -34,17 +36,18 @@ const translations = {
     yourExperience:"تجربتكم",experienceTitle:"أكثر من مجرد درس في الطبخ",experienceIntro:"تجربة مغربية خاصة، كتتنظم حسب رغباتكم والوقت اللي مناسب ليكم.",feature1Title:"اختاروا الأطباق ديالكم",feature1Text:"تعلموا تحضير الأكلات المغربية اللي كتختاروها، من الأطباق التقليدية حتى للوصفات اللي باغين تكتاشفوها.",feature2Title:"اكتشفوا السوق المغربي",feature2Text:"إلا بغيتو، تقدروا تخرجو مع محمد تشريو المكونات وتكتاشفو أجواء وروائح ونكهات السوق المغربي.",optional:"نشاط اختياري",feature3Title:"طيبو مع بعضكم",feature3Text:"شاركو فعملية الطبخ، تعلمو تقنيات عملية واكتاشفو الحكايات اللي ورا المطبخ المغربي.",
     productsEyebrow:"اختياراتنا",productsTitle:"منتجاتنا",productsIntro:"اكتشفوا مجموعة من المنتجات المغربية.",productsLoading:"كنحملو المنتجات...",productsEmpty:"ما كايناش منتجات متوفرة حاليا.",productsError:"ما قدرناش نحملو المنتجات.",productContact:"تواصل معنا",
     videosEyebrow:"شوفوا واكتشفوا",videosTitle:"الفيديوهات ديالنا",videosIntro:"اكتشفوا المطبخ المغربي من خلال الفيديوهات.",videosLoading:"كنحملو الفيديوهات...",videosEmpty:"ما كايناش فيديوهات متوفرة حاليا.",videosError:"ما قدرناش نحملو الفيديوهات.",
-    quote:"« أحسن طريقة لاكتشاف ثقافة هي من خلال الماكلة ديالها. »",moments:"لحظات للمشاركة",galleryTitle:"داخل المطبخ المغربي",madeForYou:"تجربة على حساب رغبتكم",personalTitle:"وقتكم. المينيو ديالكم. تجربتكم.",personalText:"مدة حصة الطبخ مرنة وكتكون حسب طلبكم. الثمن كيتحدد حسب المدة، والشاف محمد هو اللي كيحددو بنفسو. تواصلو معاه باش تناقشو التجربة اللي بغيتو وتاخدو الثمن.",askPrice:"طلب الثمن من محمد",letsPlan:"نوجدو التجربة ديالكم",contactTitle:"واجدين تطيبو ففاس؟",contactText:"قولو لمحمد شنو بغيتو تطيبو، شحال من الوقت عندكم، وواش باغين تزورو السوق المغربي.",whatsapp:"تواصلوا عبر واتساب"
+    quote:"« أحسن طريقة لاكتشاف ثقافة هي من خلال الماكلة ديالها. »",moments:"لحظات للمشاركة",galleryTitle:"داخل المطبخ المغربي",madeForYou:"تجربة على حساب رغبتكم",personalTitle:"وقتكم. المينيو ديالكم. تجربتكم.",personalText:"مدة حصة الطبخ مرنة وكتكون حسب طلبكم. الثمن كيتحدد حسب المدة، والشاف محمد هو اللي كيحددو بنفسو. تواصلو معاه باش تناقشو التجربة اللي بغيتو وتاخدو الثمن.",askPrice:"طلب الثمن من محمد",letsPlan:"نوجدو التجربة ديالكم",contactTitle:"واجدين تطيبو ففاس؟",contactText:"قولو لمحمد شنو بغيتو تطيبو، شحال من الوقت عندكم، وواش باغين تزورو السوق المغربي.",whatsapp:"تواصلوا عبر واتساب",
+    bookingTitle:"احجزوا تجربة الطبخ ديالكم",bookingIntro:"عمّرو الاستمارة ومحمد غادي يتواصل معاكم باش يأكد الحجز.",bookingName:"الاسم الكامل",bookingEmail:"البريد الإلكتروني",bookingPhone:"رقم الهاتف",bookingDate:"التاريخ اللي مناسب ليكم",bookingGuests:"عدد الأشخاص",bookingNote:"معلومات إضافية",bookingNotePlaceholder:"قولو لينا شنو الأطباق اللي بغيتو تحضرو...",bookingSubmit:"إرسال طلب الحجز",bookingSending:"كنرسلو الطلب...",bookingSuccess:"توصلنا بطلب الحجز ديالكم بنجاح! محمد غادي يتواصل معاكم قريبا.",bookingError:"سمحو لينا، ما قدرناش نرسلو الطلب. عاودو المحاولة أو تواصلو معنا عبر واتساب.",bookingRequired:"عافاكم عمّرو الخانات المطلوبة."
   }
 };
 
 const language = document.getElementById("language");
 const productsContainer = document.getElementById("products-list");
 const videosContainer = document.getElementById("videos-list");
+const bookingForm = document.getElementById("bookingForm");
 
 let currentLanguage = localStorage.getItem("darMohamedLanguage") || "en";
 
-/* ترجمة حقوق الموقع حسب اللغة المختارة */
 function updateCopyright() {
   const copyrightElement = document.getElementById("copyright-text");
   if (!copyrightElement) return;
@@ -61,7 +64,6 @@ function updateCopyright() {
     copyrightTranslations[currentLanguage] || copyrightTranslations.en;
 }
 
-/* ربط محتوى لوحة الإدارة مع الصفحة الرئيسية */
 const contentTargets = {
   hero: {
     title: ["heroTitle"],
@@ -101,7 +103,6 @@ function escapeHTML(value) {
 function applySiteContent(rows) {
   rows.forEach(item => {
     const targets = contentTargets[item.section];
-
     if (!targets) return;
 
     if (item.title && targets.title) {
@@ -118,7 +119,6 @@ function applySiteContent(rows) {
       });
     }
 
-    /* صور قسم الواجهة والتعريف */
     if (item.image_url) {
       if (item.section === "hero") {
         const image = document.querySelector(".hero-photo img");
@@ -145,9 +145,7 @@ async function loadSiteContent() {
       return;
     }
 
-    if (data && data.length) {
-      applySiteContent(data);
-    }
+    if (data && data.length) applySiteContent(data);
   } catch (error) {
     console.error("Site content exception:", error);
   }
@@ -164,6 +162,11 @@ async function setLanguage(lang) {
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.getAttribute("data-i18n");
     if (t[key]) el.textContent = t[key];
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (t[key]) el.placeholder = t[key];
   });
 
   document.title =
@@ -209,6 +212,7 @@ async function loadProducts() {
       const name = escapeHTML(product.name);
       const description = escapeHTML(product.description);
       const category = escapeHTML(product.category);
+
       const image = product.image_url
         ? `<img src="${escapeHTML(product.image_url)}" alt="${name}" loading="lazy">`
         : "";
@@ -352,6 +356,96 @@ async function loadVideos() {
     console.error("Videos exception:", error);
     videosContainer.innerHTML = `<p>Videos error: ${escapeHTML(error.message || error)}</p>`;
   }
+}
+
+/* إعداد استمارة الحجز */
+function setBookingDateMinimum() {
+  const dateInput = bookingForm?.querySelector('[name="booking_date"]');
+  if (!dateInput) return;
+
+  const today = new Date();
+  const localDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+  ).toISOString().split("T")[0];
+
+  dateInput.min = localDate;
+}
+
+function showBookingMessage(message, type) {
+  const messageElement = document.getElementById("bookingMessage");
+  if (!messageElement) return;
+
+  messageElement.textContent = message;
+  messageElement.style.color = type === "success" ? "#247a45" : "#b42318";
+}
+
+if (bookingForm) {
+  setBookingDateMinimum();
+
+  bookingForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const t = translations[currentLanguage] || translations.en;
+    const submitButton = document.getElementById("bookingSubmit");
+
+    if (!bookingForm.reportValidity()) {
+      showBookingMessage(t.bookingRequired, "error");
+      return;
+    }
+
+    const formData = new FormData(bookingForm);
+
+    const booking = {
+      customer_name: String(formData.get("customer_name") || "").trim(),
+      email: String(formData.get("email") || "").trim(),
+      phone: String(formData.get("phone") || "").trim(),
+      booking_date: String(formData.get("booking_date") || ""),
+      guests: Number(formData.get("guests") || 1),
+      message: String(formData.get("message") || "").trim(),
+      status: "pending"
+    };
+
+    if (
+      !booking.customer_name ||
+      !booking.email ||
+      !booking.phone ||
+      !booking.booking_date ||
+      !Number.isInteger(booking.guests) ||
+      booking.guests < 1
+    ) {
+      showBookingMessage(t.bookingRequired, "error");
+      return;
+    }
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = t.bookingSending;
+    }
+
+    showBookingMessage("", "");
+
+    try {
+      const { error } = await supabase
+        .from("bookings")
+        .insert([booking]);
+
+      if (error) throw error;
+
+      showBookingMessage(t.bookingSuccess, "success");
+      bookingForm.reset();
+      setBookingDateMinimum();
+
+    } catch (error) {
+      console.error("Booking submission error:", error);
+      showBookingMessage(t.bookingError, "error");
+
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = t.bookingSubmit;
+      }
+    }
+  });
 }
 
 if (language) {
